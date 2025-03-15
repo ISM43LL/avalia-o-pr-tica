@@ -1,6 +1,9 @@
 const canvas = document.getElementById('jogoCanvas');
 const ctx = canvas.getContext('2d');
 
+let jogoAtivo = true;
+let pontuacao = 0;
+
 class Jogo {
     constructor(x, y, largura, altura) {
         this.x = x;
@@ -15,7 +18,7 @@ class Raquete extends Jogo {
 
     constructor(x, y, largura, altura) {
         super(x, y, largura, altura);
-        this.#velocidade = 10;
+        this.#velocidade = 15;
     }
     mover(direcao) {
         if (direcao === 'esquerda' && this.x > 0) {
@@ -79,7 +82,7 @@ class Bolinha extends Jogo {
     }
 
     desenhar() {
-        ctx.fillStyle = 'red';
+        ctx.fillStyle = 'yellow';
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.largura / 2, 0, Math.PI * 2);
         ctx.fill();
@@ -98,6 +101,8 @@ class Bloco extends Jogo {
 let raquete, bolinha, blocos;
 
 function iniciarJogo() {
+    jogoAtivo = true;
+    pontuacao = 0;
     raquete = new Raquete(canvas.width / 2 - 75, canvas.height - 40, 150, 15);
     bolinha = new Bolinha(canvas.width / 2, canvas.height / 2, 15);
     blocos = [];
@@ -105,9 +110,28 @@ function iniciarJogo() {
     for (let i = 0; i < 4; i++) {
         blocos.push(new Bloco(i * 200 + 50, 50, 150, 25));
     }
+    loop()
 }
 
+function botoes(){
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') {
+            raquete.mover('esquerda');
+        } else if (e.key === 'ArrowRight') {
+            raquete.mover('direita');
+        } else if (e.key === ' ') {
+            if (!jogoAtivo) {
+                iniciarJogo();
+            }
+        }
+    });
+}
 
+function desenharPontuacao() {
+    ctx.fillStyle = 'white';
+    ctx.font = '20px Arial';
+    ctx.fillText(`Pontuação: ${pontuacao}`, canvas.width - 150, 30);
+}
 
 function loop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -116,8 +140,15 @@ function loop() {
     bolinha.desenhar();
     blocos.forEach(bloco => bloco.desenhar());
     desenharPontuacao();
-
+    botoes();
+    
+    if (jogoAtivo) {
+        requestAnimationFrame(loop);
+    } else {
+        ctx.fillStyle = 'red';
+        ctx.font = '60px Arial';
+        ctx.fillText('Fim de Jogo', canvas.width / 2 - 100, canvas.height / 2);
+    }
     
 }
-
 iniciarJogo();
