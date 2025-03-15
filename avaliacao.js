@@ -108,18 +108,6 @@ function iniciarJogo() {
 }
 
 
-function botoes (){
-    document.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowLeft') {
-        raquete.mover('esquerda');
-    } else if (e.key === 'ArrowRight') {
-        raquete.mover('direita');
-    } else if (e.key === ' ') {
-        if (!jogoAtivo) {
-            iniciarJogo();
-        }
-    }
-})};
 
 function loop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -128,15 +116,8 @@ function loop() {
     bolinha.desenhar();
     blocos.forEach(bloco => bloco.desenhar());
     desenharPontuacao();
-    botoes();
 
-    if (jogoAtivo) {
-        requestAnimationFrame(loop);
-    } else {
-        ctx.fillStyle = 'white';
-        ctx.font = '50px Arial';
-        ctx.fillText('Fim de Jogo', canvas.width / 2 - 100, canvas.height / 2);
-    }
+    
 }
 
 iniciarJogo();
